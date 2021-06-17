@@ -3,10 +3,14 @@ package com.dev.taxi.dao;
 import com.dev.taxi.lib.Dao;
 import com.dev.taxi.lib.exception.DataProcessingException;
 import com.dev.taxi.model.Car;
+import com.dev.taxi.model.Driver;
 import com.dev.taxi.model.Manufacturer;
 import com.dev.taxi.util.ConnectionUtil;
-
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -22,7 +26,7 @@ public class CarDaoImpl implements CarDao {
         String insertQuery = "INSERT INTO cars (model, manufacturer_id)"
                 + "VALUES (?, ?)";
         try (Connection connection = ConnectionUtil.getConnection();
-             PreparedStatement preparedStatement =
+                PreparedStatement preparedStatement =
                         connection.prepareStatement(
                              insertQuery, Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setString(1, car.getModel());
@@ -156,7 +160,7 @@ public class CarDaoImpl implements CarDao {
 
     private void insertAllDrivers(Car car) {
         Long carId = car.getId();
-        List<com.dev.taxi.model.Driver> drivers = car.getDrivers();
+        List<Driver> drivers = car.getDrivers();
         if (drivers.size() == 0) {
             return;
         }
@@ -167,7 +171,7 @@ public class CarDaoImpl implements CarDao {
                 PreparedStatement preparedStatement =
                         connection.prepareStatement(insertQuery)) {
             for (int i = 0; i < drivers.size(); i++) {
-                com.dev.taxi.model.Driver driver = drivers.get(i);
+                Driver driver = drivers.get(i);
                 preparedStatement.setLong((i * PARAMETER_SHIFT) + 1, carId);
                 preparedStatement.setLong((i * PARAMETER_SHIFT) + 2, driver.getId());
             }
@@ -179,7 +183,7 @@ public class CarDaoImpl implements CarDao {
 
     private void deleteAllDriversExceptList(Car car) {
         Long carId = car.getId();
-        List<com.dev.taxi.model.Driver> exceptions = car.getDrivers();
+        List<Driver> exceptions = car.getDrivers();
         int size = exceptions.size();
         String insertQuery = "DELETE FROM cars_drivers WHERE car_id = ? "
                 + "AND NOT driver_id IN ("
@@ -190,7 +194,7 @@ public class CarDaoImpl implements CarDao {
                         connection.prepareStatement(insertQuery)) {
             preparedStatement.setLong(1, carId);
             for (int i = 0; i < size; i++) {
-                com.dev.taxi.model.Driver driver = exceptions.get(i);
+                Driver driver = exceptions.get(i);
                 preparedStatement.setLong((i) + PARAMETER_SHIFT, driver.getId());
             }
             preparedStatement.executeUpdate();
@@ -199,7 +203,7 @@ public class CarDaoImpl implements CarDao {
         }
     }
 
-    private List<com.dev.taxi.model.Driver> getAllDriversByCarId(Long carId) {
+    private List<Driver> getAllDriversByCarId(Long carId) {
         String selectQuery = "SELECT id, name, login, password,"
                 + " license_number FROM cars_drivers cd "
                 + "JOIN drivers d on cd.driver_id = d.id "
@@ -209,7 +213,7 @@ public class CarDaoImpl implements CarDao {
                         connection.prepareStatement(selectQuery)) {
             preparedStatement.setLong(1, carId);
             ResultSet resultSet = preparedStatement.executeQuery();
-            List<com.dev.taxi.model.Driver> drivers = new ArrayList<>();
+            List<Driver> drivers = new ArrayList<>();
             while (resultSet.next()) {
                 drivers.add(parseDriverFromResultSet(resultSet));
             }
@@ -219,13 +223,13 @@ public class CarDaoImpl implements CarDao {
         }
     }
 
-    private com.dev.taxi.model.Driver parseDriverFromResultSet(ResultSet resultSet) throws SQLException {
+    private Driver parseDriverFromResultSet(ResultSet resultSet) throws SQLException {
         long driverId = resultSet.getLong("id");
         String name = resultSet.getNString("name");
         String licenseNumber = resultSet.getNString("license_number");
         String login = resultSet.getNString("login");
         String password = resultSet.getNString("password");
-        com.dev.taxi.model.Driver driver = new com.dev.taxi.model.Driver(name, licenseNumber, login, password);
+        Driver driver = new Driver(name, licenseNumber, login, password);
         driver.setId(driverId);
         return driver;
     }

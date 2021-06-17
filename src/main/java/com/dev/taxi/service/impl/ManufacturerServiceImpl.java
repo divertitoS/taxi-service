@@ -5,7 +5,6 @@ import com.dev.taxi.lib.Inject;
 import com.dev.taxi.lib.Service;
 import com.dev.taxi.model.Manufacturer;
 import com.dev.taxi.service.ManufacturerService;
-
 import java.util.List;
 
 @Service

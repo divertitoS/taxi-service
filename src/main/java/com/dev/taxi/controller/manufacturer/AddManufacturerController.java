@@ -3,15 +3,14 @@ package com.dev.taxi.controller.manufacturer;
 import com.dev.taxi.lib.Injector;
 import com.dev.taxi.model.Manufacturer;
 import com.dev.taxi.service.ManufacturerService;
-
+import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 public class AddManufacturerController extends HttpServlet {
-    private static final Injector injector = Injector.getInstance("com/dev/taxi");
+    private static final Injector injector = Injector.getInstance("com.dev.taxi");
     private final ManufacturerService manufacturerService = (ManufacturerService) injector
             .getInstance(ManufacturerService.class);
 

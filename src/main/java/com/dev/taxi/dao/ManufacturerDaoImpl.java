@@ -4,8 +4,11 @@ import com.dev.taxi.lib.Dao;
 import com.dev.taxi.lib.exception.DataProcessingException;
 import com.dev.taxi.model.Manufacturer;
 import com.dev.taxi.util.ConnectionUtil;
-
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -16,7 +19,7 @@ public class ManufacturerDaoImpl implements ManufacturerDao {
     public Manufacturer create(Manufacturer manufacturer) {
         String query = "INSERT INTO manufacturers (name, country) VALUES (?,?)";
         try (Connection connection = ConnectionUtil.getConnection();
-             PreparedStatement preparedStatement
+                PreparedStatement preparedStatement
                         = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             setUpdate(preparedStatement, manufacturer).executeUpdate();
             ResultSet resultSet = preparedStatement.getGeneratedKeys();

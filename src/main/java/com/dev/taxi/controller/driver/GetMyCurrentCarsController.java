@@ -3,17 +3,16 @@ package com.dev.taxi.controller.driver;
 import com.dev.taxi.lib.Injector;
 import com.dev.taxi.model.Car;
 import com.dev.taxi.service.CarService;
-
+import java.io.IOException;
+import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.List;
 
 public class GetMyCurrentCarsController extends HttpServlet {
     private static final String DRIVER_ID = "driverId";
-    private static final Injector injector = Injector.getInstance("com/dev/taxi");
+    private static final Injector injector = Injector.getInstance("com.dev.taxi");
     private final CarService carService = (CarService) injector.getInstance(CarService.class);
 
     @Override

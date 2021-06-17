@@ -6,12 +6,11 @@ import com.dev.taxi.lib.Service;
 import com.dev.taxi.model.Driver;
 import com.dev.taxi.service.AuthenticationService;
 import com.dev.taxi.service.DriverService;
-
 import java.util.Optional;
 
 @Service
 public class AuthenticationServiceImpl implements AuthenticationService {
-    private static final Injector injector = Injector.getInstance("com/dev/taxi");
+    private static final Injector injector = Injector.getInstance("com.dev.taxi");
     private final DriverService driverService = (DriverService) injector
             .getInstance(DriverService.class);
 
